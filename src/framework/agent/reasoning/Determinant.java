@@ -1,12 +1,12 @@
 package framework.agent.reasoning;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.apache.log4j.Level;
+
 import org.apache.log4j.Logger;
 
 import framework.concept.Option;
+import framework.concept.OutcomeProps;
 import framework.concept.Task;
 
 /**
@@ -39,28 +39,28 @@ public abstract class Determinant {
 	 *         options that has the same value are put into the same element set of
 	 *         the list.
 	 */
-	public Map<Double, Set<Option>> rankOptions(Set<Option> inputOpts, Task task) {
-		Map<Double, Set<Option>> rankingResult = new HashMap<Double, Set<Option>>();
-		Map<Double, Set<Option>> valueToOptsMap = evalOpts(inputOpts, task);
-		double sumValue = 0;
-		for (Double v : valueToOptsMap.keySet()) {
-			sumValue += v;
-		}
-		if (Double.compare(sumValue, 0.0) == 0)
-			sumValue = 1;
-		String debugString = "Determinant: " + this.id + " with weight " + this.weight + " \n";
-
-		for (Map.Entry<Double, Set<Option>> entry : valueToOptsMap.entrySet()) {
-			debugString += "Value: " + entry.getKey() + " \n";
-			for (Option opt : entry.getValue()) {
-				debugString += "Option: " + opt.toString() + " \n";
-			}
-			debugString += " \n";
-			rankingResult.put(entry.getKey() / sumValue, entry.getValue());
-		}
-		LOGGER.log(Level.DEBUG, debugString);
-		return rankingResult;
-	}
+//	public Map<Double, Set<Option>> rankOptions(Set<Option> inputOpts, Task task) {
+//		Map<Double, Set<Option>> rankingResult = new HashMap<Double, Set<Option>>();
+//		Map<Double, Set<Option>> valueToOptsMap = evalOpts(inputOpts, task);
+//		double sumValue = 0;
+//		for (Double v : valueToOptsMap.keySet()) {
+//			sumValue += v;
+//		}
+//		if (Double.compare(sumValue, 0.0) == 0)
+//			sumValue = 1;
+//		String debugString = "Determinant: " + this.id + " with weight " + this.weight + " \n";
+//
+//		for (Map.Entry<Double, Set<Option>> entry : valueToOptsMap.entrySet()) {
+//			debugString += "Value: " + entry.getKey() + " \n";
+//			for (Option opt : entry.getValue()) {
+//				debugString += "Option: " + opt.toString() + " \n";
+//			}
+//			debugString += " \n";
+//			rankingResult.put(entry.getKey() / sumValue, entry.getValue());
+//		}
+//		LOGGER.log(Level.DEBUG, debugString);
+//		return rankingResult;
+//	}
 
 	/**
 	 * This function evaluate the input option set and put product the result as a
@@ -69,7 +69,11 @@ public abstract class Determinant {
 	 * @param inputOpts The set of option to be evaluated.
 	 * @param task      The task to be performed by the agent.
 	 */
-	protected abstract Map<Double, Set<Option>> evalOpts(Set<Option> inputOpts, Task task);
+	// protected abstract Map<Double, Set<Option>> evalOpts(Set<Option> inputOpts,
+	// Task task);
+
+	protected abstract Map<Option, Double> evalOptions(List<Option> options, List<OutcomeProps> outcomePropsList,
+			Task task);
 
 	public String getID() {
 		return this.id;

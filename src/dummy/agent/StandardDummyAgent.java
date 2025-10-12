@@ -1,11 +1,15 @@
 package dummy.agent;
 
 import java.util.Set;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import dummy.concept.MobilityMode;
 import dummy.concept.MobilityOption;
+import dummy.concept.MobilityOutcomeProps;
 import dummy.concept.Vehicle;
+import dummy.simulator.GlobalVars;
 import framework.agent.core.CommunicationComponent;
 import framework.agent.core.DecisionComponent;
 import framework.agent.core.MemoryComponent;
@@ -15,6 +19,7 @@ import framework.agent.reasoning.Determinant;
 import framework.agent.reasoning.LeafDeterminant;
 import framework.agent.reasoning.ParentDeterminant;
 import framework.concept.Option;
+import framework.concept.OutcomeProps;
 import framework.concept.Task;
 import framework.environment.Environment;
 
@@ -123,18 +128,18 @@ public class StandardDummyAgent extends TaskExecutionAgent {
 		evaluation.addDeterminantChild(new LeafDeterminant("time", this.timeWeight) {
 
 			@Override
-			protected double evalOpt(Option opt, Task task) {
-				MobilityOption mobilityOpt = (MobilityOption) opt;
-				LOGGER.log(Level.DEBUG, "Evaluating TIME option " + mobilityOpt.getTime());
-				return mobilityOpt.getTime();
+			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
+				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
+				LOGGER.log(Level.DEBUG, "Evaluating TIME option " + mobilityOutcomes.getTotalTime());
+				return mobilityOutcomes.getTotalTime();
 			}
 		});
 		evaluation.addDeterminantChild(new LeafDeterminant("cost", this.costWeight) {
 			@Override
-			protected double evalOpt(Option opt, Task task) {
-				MobilityOption mobilityOption = (MobilityOption) opt;
-				LOGGER.log(Level.DEBUG, "Evaluating COST option " + mobilityOption.getCost());
-				return mobilityOption.getCost();
+			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
+				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
+				LOGGER.log(Level.DEBUG, "Evaluating COST option " + mobilityOutcomes.getPrice());
+				return mobilityOutcomes.getPrice();
 			}
 		});
 		LOGGER.log(Level.DEBUG, " Evalutation " + evaluation.toString());
@@ -143,23 +148,57 @@ public class StandardDummyAgent extends TaskExecutionAgent {
 
 	private Determinant createNormDeterminant() {
 		return new LeafDeterminant("norm", this.normWeight) {
-
 			@Override
-			protected double evalOpt(Option opt, Task task) {
-				// TODO Auto-generated method stub
-				return 0;
+			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
+				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
+				LOGGER.log(Level.DEBUG, "Norm determinant influence:  " + mobilityOutcomes.getInfluence());
+				return mobilityOutcomes.getInfluence();
 			}
 		};
 	}
 
 	private Determinant createRoleDeterminant() {
-		// TODO Auto-generated method stub
-		return null;
+		return new LeafDeterminant("role", this.roleWeight) {
+
+			@Override
+			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
+				double addPoint = 0;
+				MobilityMode mobilityMode = ((MobilityOption) opt).getMainVehicle();
+				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
+				if (mobilityOutcomes.hasClimateAwareness()) {
+					addPoint = GlobalVars.AGENT_DECISION_PARAMS.CLIMATE_AWARE_POINTS;
+				}
+				if (mobilityMode.getMotorType().contains("NW")) {
+					return GlobalVars.AGENT_DECISION_PARAMS.ENVIRONMENTAL_RANKING_VALUE_OF_MOTOR_NW + addPoint;
+				}
+				if (mobilityMode.getMotorType().contains("E") || mobilityMode.getMotorType().contains("H")) {
+					return GlobalVars.AGENT_DECISION_PARAMS.ENVIRONMENTAL_RANKING_VALUE_OF_MOTOR_E + addPoint;
+				}
+				return GlobalVars.AGENT_DECISION_PARAMS.ENVIRONMENTAL_RANKING_VALUE_OF_MOTOR_G;
+			}
+
+		};
+
+//			@Override
+//			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
+//				// TODO Auto-generated method stub
+//				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
+//				LOGGER.log(Level.DEBUG, "ROLE determinant" + mobilityOutcomes.);
+//				return 0;
+//			}
+//		};
 	}
 
 	private Determinant createSelfDeterminant() {
-		// TODO Auto-generated method stub
-		return null;
+		return new LeafDeterminant("self", this.selfWeight) {
+
+			@Override
+			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
+				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
 	}
 
 	private Determinant createEmotionDeterminant() {

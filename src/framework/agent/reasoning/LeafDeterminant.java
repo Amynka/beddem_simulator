@@ -1,11 +1,12 @@
 package framework.agent.reasoning;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import framework.agent.core.IAgent;
 import framework.concept.Option;
+import framework.concept.OutcomeProps;
 import framework.concept.Task;
 
 /**
@@ -26,29 +27,38 @@ public abstract class LeafDeterminant extends Determinant {
 	 * Evaluate (give a value) to an option according to the task to be performed.
 	 * This function usually implemented in an agent.
 	 * 
-	 * @param opt
-	 *            The input to be evaluate.
-	 * @param task
-	 *            A task to be performed by the agent.
+	 * @param opt  The input to be evaluate.
+	 * @param task A task to be performed by the agent.
 	 * @return The value of the option given by the agent.
 	 */
-	protected abstract double evalOpt(Option opt, Task task);
+	protected abstract double evalOpt(Option opt, OutcomeProps outcomeProps, Task task);
 
 	@Override
-	protected Map<Double, Set<Option>> evalOpts(Set<Option> inputOpts, Task task) {
-		Map<Double, Set<Option>> result = new HashMap<Double, Set<Option>>();
-		// For each options in the input set, evaluate it then put it in the result map.
-		for (Option opt : inputOpts) {
-			double newValue = evalOpt(opt, task);
-			if (result.containsKey(newValue)) {
-				result.get(newValue).add(opt);
-			} else {
-				HashSet<Option> opts = new HashSet<Option>();
-				opts.add(opt);
-				result.put(newValue, opts);
-			}
+	public Map<Option, Double> evalOptions(List<Option> options, List<OutcomeProps> outcomePropsList, Task task) {
+		Map<Option, Double> results = new HashMap<Option, Double>();
+		for (int i = 0; i < options.size(); i++) {
+			results.put(options.get(i), evalOpt(options.get(i), outcomePropsList.get(i), task));
 		}
-		return result;
+		return results;
 	}
+
+//	protected abstract double evalOpt(Option opt, Task task);
+//
+//	@Override
+//	protected Map<Double, Set<Option>> evalOpts(Set<Option> inputOpts, Task task) {
+//		Map<Double, Set<Option>> result = new HashMap<Double, Set<Option>>();
+//		// For each options in the input set, evaluate it then put it in the result map.
+//		for (Option opt : inputOpts) {
+//			double newValue = evalOpt(opt, task);
+//			if (result.containsKey(newValue)) {
+//				result.get(newValue).add(opt);
+//			} else {
+//				HashSet<Option> opts = new HashSet<Option>();
+//				opts.add(opt);
+//				result.put(newValue, opts);
+//			}
+//		}
+//		return result;
+//	}
 
 }

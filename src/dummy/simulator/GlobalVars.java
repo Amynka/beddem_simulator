@@ -1,5 +1,10 @@
 package dummy.simulator;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+
+import dummy.database.CSVReader;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
 
@@ -84,6 +89,8 @@ public abstract class GlobalVars {
 		// public static final double WEIGHT_OF_HABITS = 0.5;
 		// public static final double WEIGHT_OF_INTENTION = 0.5;
 		// public static final int OPTIONS_CONSIDERED = 10;
+		private static Random rand = new Random();
+		public static final int CLIMATE_AWARE_POINTS = 1 + rand.nextInt(5);
 
 		public static final double ENVIRONMENTAL_RANKING_VALUE_OF_MOTOR_NW = 1.0;
 		public static final double ENVIRONMENTAL_RANKING_VALUE_OF_MOTOR_E = 2.5;
@@ -91,6 +98,47 @@ public abstract class GlobalVars {
 
 		public static final double WORK_SPACE_RANKING_VALUE_OF_RAIL_BUS_TRAM = 1.0;
 		public static final double WORK_SPACE_RANKING_VALUE_OF_OTHER_MODE = 5.0;
+	}
+
+	public final static class GLOBAL_FUEL_PRICE {
+		private static double priceOfG;
+		private static double priceOfD;
+		private static double priceOfE;
+		private static double priceOfH;
+		private static double extraPublic;
+		private static double extraEV;
+		private static double extraFossil;
+
+		protected static void updatePrice(CSVReader reader) throws IOException {
+			List<Double> newPrices = reader.createPrices();
+			priceOfG = newPrices.get(0);
+			priceOfD = newPrices.get(1);
+			priceOfE = newPrices.get(2);
+			priceOfH = newPrices.get(3);
+			extraPublic = newPrices.get(4);
+			extraEV = newPrices.get(5);
+			extraFossil = newPrices.get(6);
+		}
+
+		public static double getPrice(int checkpoint, String typeOfService, String motorType) {
+
+			if (typeOfService.equals("Bus") || typeOfService.equals("Tram") || typeOfService.equals("Train")) {
+				return priceOfE + extraPublic;
+			}
+			if (motorType.contains("GSL")) {
+				return priceOfG + extraFossil;
+			}
+			if (motorType.contains("DSL")) {
+				return priceOfD + extraFossil;
+			}
+			if (motorType.contains("ELC")) {
+				return priceOfE + extraEV;
+			}
+			if (motorType.contains("H20")) {
+				return priceOfH;
+			}
+			return priceOfG + extraFossil;
+		}
 	}
 
 }

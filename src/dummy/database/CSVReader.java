@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,6 +58,30 @@ public class CSVReader {
 			throw new FileNotFoundException("Could not find the given file: " + file.getAbsolutePath());
 		}
 		return new BufferedReader(new FileReader(file));
+	}
+
+	public List<Double> createPrices() throws IOException {
+		List<Double> prices = new ArrayList<Double>();
+
+		String csvDataDir = ContextManager.getProperty(GlobalVars.CSVDataDirectory);
+		String pricesFile = csvDataDir + ContextManager.getProperty(GlobalVars.EconomyTable) + ".csv";
+
+		BufferedReader br = getBufferReaderForFile(pricesFile);
+		String line;
+		br.readLine();
+
+		while ((line = br.readLine()) != null) {
+			String[] inputs = line.split(",");
+			prices.add(Double.parseDouble(inputs[0]));
+			prices.add(Double.parseDouble(inputs[1]));
+			prices.add(Double.parseDouble(inputs[2]));
+			prices.add(Double.parseDouble(inputs[3]));
+			prices.add(Double.parseDouble(inputs[4]));
+			prices.add(Double.parseDouble(inputs[5]));
+			prices.add(Double.parseDouble(inputs[6]));
+		}
+		br.close();
+		return prices;
 	}
 
 	public void createResources() throws IOException {
@@ -125,6 +151,8 @@ public class CSVReader {
 		while ((line = br.readLine()) != null) {
 			LOGGER.log(Level.DEBUG, "Line" + line);
 			String[] inputs = line.split(",");
+			String agentId = inputs[0];
+			String locId = inputs[1];
 			double initialFund = Double.parseDouble(inputs[2]);
 			String[] vehicleIDs = inputs[3].split(";");
 			Set<Vehicle> ownVehicles = new HashSet<Vehicle>();
@@ -148,7 +176,7 @@ public class CSVReader {
 			double intentionWeight = Double.parseDouble(inputs[15]);
 			double habitWeight = Double.parseDouble(inputs[16]);
 
-			StandardDummyAgent agent = new StandardDummyAgent(inputs[0], idToLocationMap.get(inputs[1]), initialFund,
+			StandardDummyAgent agent = new StandardDummyAgent(agentId, idToLocationMap.get(locId), initialFund,
 					ownVehicles, beliefWeight, evaluationWeight, timeWeight, costWeight, normWeight, roleWeight,
 					selfWeight, emotionWeight, facilitatingWeight, freqWeight, attitudeWeight, socialWeight,
 					affectWeight, intentionWeight, habitWeight);

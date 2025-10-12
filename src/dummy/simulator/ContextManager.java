@@ -92,6 +92,7 @@ public class ContextManager implements ContextBuilder<Object> {
 		try {
 			generator.createResources();
 			generator.createLocations(locationContext, idToLocationMap);
+			GlobalVars.GLOBAL_FUEL_PRICE.updatePrice(generator);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

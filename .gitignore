@@ -16,3 +16,7 @@ Repast.settings
 /testbin/
 junit/*
 .idea/*
+build*.xml
+*.txt
+.temp/*
+beddem_simulato*

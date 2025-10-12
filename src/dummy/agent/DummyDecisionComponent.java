@@ -1,16 +1,10 @@
 package dummy.agent;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import framework.agent.core.DecisionComponent;
 import framework.agent.reasoning.Determinant;
 import framework.agent.reasoning.TIBModel;
-import framework.concept.Option;
-import framework.concept.Task;
 
 public class DummyDecisionComponent extends TIBModel implements DecisionComponent {
 
@@ -24,12 +18,4 @@ public class DummyDecisionComponent extends TIBModel implements DecisionComponen
 				socialWeight, affectWeight, intentionWeight, habitWeight);
 
 	}
-
-	@Override
-	public Map<Double, Set<Option>> evaluateOptions(Set<Option> options, Task task) {
-		// Get the list of all ranked options from agent's decision making model.
-		LOGGER.log(Level.DEBUG, "Rank options" + options.toString());
-		return rankOptions(options, task);
-	}
-
 }
