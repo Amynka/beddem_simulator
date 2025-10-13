@@ -3,14 +3,15 @@ package dummy.agent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 // Feedback is not defined yet
 //import dummy.concept.MobilityFeedback;
 import dummy.concept.MobilityInternalState;
-import dummy.concept.MobilityOption;
 import dummy.concept.MobilityTask;
+import dummy.concept.SimpleOption;
 import dummy.concept.Vehicle;
 import framework.agent.core.MemoryComponent;
 import framework.concept.Feedback;
@@ -48,10 +49,12 @@ public class DummyMemoryComponent implements MemoryComponent {
 	@Override
 	public void updateInternalState(Task task, Option option, Feedback feedback) {
 		// MobilityFeedback mobilityFeedBack = (MobilityFeedback) feedback;
-		MobilityOption mobilityOption = (MobilityOption) option;
+		// MobilityOption mobilityOption = (MobilityOption) option;
+		SimpleOption mobilityOption = (SimpleOption) option;
 		MobilityTask mobilityTask = (MobilityTask) task;
 //		this.currentFund -= mobilityFeedBack.getCost();
 		Vehicle mainVehicle = mobilityOption.getMainVehicle();
+		// MobilityMode mainVehicle =
 //		this.lastExperience.put(mainVehicle, mobilityFeedBack.getExperienceScore());
 		if (!this.pastFreq.containsKey(mainVehicle)) {
 			this.pastFreq.put(mainVehicle, 1);

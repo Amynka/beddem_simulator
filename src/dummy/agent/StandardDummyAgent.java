@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import dummy.concept.MobilityMode;
 import dummy.concept.MobilityOption;
 import dummy.concept.MobilityOutcomeProps;
+import dummy.concept.SimpleOption;
 import dummy.concept.Vehicle;
 import dummy.simulator.GlobalVars;
 import framework.agent.core.CommunicationComponent;
@@ -129,17 +130,17 @@ public class StandardDummyAgent extends TaskExecutionAgent {
 
 			@Override
 			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
-				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
-				LOGGER.log(Level.DEBUG, "Evaluating TIME option " + mobilityOutcomes.getTotalTime());
-				return mobilityOutcomes.getTotalTime();
+				SimpleOption mobilityOutcomes = (SimpleOption) outcomeProps;
+				LOGGER.log(Level.DEBUG, "Evaluating TIME option " + mobilityOutcomes.getTime());
+				return mobilityOutcomes.getTime();
 			}
 		});
 		evaluation.addDeterminantChild(new LeafDeterminant("cost", this.costWeight) {
 			@Override
 			protected double evalOpt(Option opt, OutcomeProps outcomeProps, Task task) {
-				MobilityOutcomeProps mobilityOutcomes = (MobilityOutcomeProps) outcomeProps;
-				LOGGER.log(Level.DEBUG, "Evaluating COST option " + mobilityOutcomes.getPrice());
-				return mobilityOutcomes.getPrice();
+				SimpleOption mobilityOutcomes = (SimpleOption) outcomeProps;
+				LOGGER.log(Level.DEBUG, "Evaluating COST option " + mobilityOutcomes.getCost());
+				return mobilityOutcomes.getCost();
 			}
 		});
 		LOGGER.log(Level.DEBUG, " Evalutation " + evaluation.toString());

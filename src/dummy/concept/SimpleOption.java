@@ -10,11 +10,16 @@ public class SimpleOption implements Option {
 
 	private String service;
 	private MobilityMode transportMode;
+	private double cost;
+	private double time;
 
-	public SimpleOption(Map<String, Double> propertyToValueMap, String service, MobilityMode transportMode) {
+	public SimpleOption(Map<String, Double> propertyToValueMap, String service, MobilityMode transportMode, double cost,
+			double time) {
 		this.service = service;
 		this.transportMode = transportMode;
 		this.propertyToValueMap = propertyToValueMap;
+		this.cost = cost;
+		this.time = time;
 	}
 
 	public double getPropertyValue(String propertyID) {
@@ -31,6 +36,14 @@ public class SimpleOption implements Option {
 
 	public MobilityMode getMainVehicle() {
 		return this.transportMode;
+	}
+
+	public double getTime() {
+		return this.time;
+	}
+
+	public double getCost() {
+		return this.cost;
 	}
 
 	@Override

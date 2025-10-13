@@ -2,13 +2,14 @@ package dummy.agent;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import dummy.concept.MobilityEnvironmentalState;
 import dummy.concept.MobilityInternalState;
-import dummy.concept.MobilityOption;
 import dummy.concept.MobilityTask;
+import dummy.concept.SimpleOption;
 import dummy.concept.Vehicle;
 import framework.agent.core.PerceptionComponent;
 import framework.concept.EnvironmentalState;
@@ -48,7 +49,7 @@ public class DummyPerceptionComponent implements PerceptionComponent {
 				LOGGER.log(Level.DEBUG, "For vehicle " + vehicle.getName() + ": Time me is less " + time
 						+ " than timelimit " + mobilityTask.getTimeLimit() + " Cost is " + cost);
 				if (cost <= mobilityInternalStat.getCurrentFund()) {
-					opts.add(new MobilityOption(vehicle, cost, time));
+					opts.add(new SimpleOption(vehicle, cost, time));
 				}
 			}
 		}
